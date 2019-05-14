@@ -25,6 +25,14 @@ Usage
 const restify = require('restify');
 const reactRenderer = require('lev-react-renderer');
 
+const formatText = restify.formatters['text/plain; q=0.3'];
+
+const httpd = restify.createServer({
+  formatters: {
+    'text/html': formatText
+  }
+});
+
 httpd.use(reactRenderer);
 
 httpd.get('/', (req, res, next) => {
