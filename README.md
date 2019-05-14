@@ -1,5 +1,5 @@
-Life Event Verification's React rendering middleware for Restify
-================================================================
+React rendering middleware for Restify
+======================================
 
 A [Restify] middleware that provides a `res.render` method for sending HTML
 responses based on a [React] component. [styled-components] is supported.
