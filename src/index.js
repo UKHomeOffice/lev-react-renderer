@@ -4,18 +4,24 @@ const { createElement } = require('react');
 const { renderToString } = require('react-dom/server');
 const { ServerStyleSheet } = require('styled-components');
 
-const page = (title, styles, body) => `<!DOCTYPE html>
+const h = createElement;
+
+const page = (title, styles, body, bundle, props) => `<!DOCTYPE html>
 <html>
   <head>
     <title>${title}</title>
     ${styles}
   </head>
   <body style="margin: 0;">
-    ${body}
+    <div id="root">
+      ${body}
+    </div>
+    ${props ? `<script>window.appProps = ${JSON.stringify(props).replace(/</g, '\\u003c')};</script>`: ''}
+    ${bundle ? `<script type="text/javascript" src="${bundle}" />`: ''}
   </body>
 </html>`;
 
-module.exports = (req, res, next) => {
+module.exports = (config) => (req, res, next) => {
   const log = req.log;
 
   res.render = function(status, component, props, children) {
@@ -30,11 +36,11 @@ module.exports = (req, res, next) => {
     const sheet = new ServerStyleSheet();
 
     try {
-      const body = renderToString(sheet.collectStyles(createElement(component, props, children)));
+      const body = renderToString(sheet.collectStyles(h(component, props, children)));
       const styles = sheet.getStyleTags();
 
       this.contentType = 'text/html';
-      this.send(status, page(title, styles, body));
+      this.send(status, page(title, styles, body, config.bundle, {...props, children}));
     } catch (err) {
       log.error(err);
     } finally {
