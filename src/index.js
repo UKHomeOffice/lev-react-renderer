@@ -17,7 +17,7 @@ const page = (title, styles, body, bundle, props) => `<!DOCTYPE html>
       ${body}
     </div>
     ${props ? `<script>window.appProps = ${JSON.stringify(props).replace(/</g, '\\u003c')};</script>`: ''}
-    ${bundle ? `<script type="text/javascript" src="${bundle}" />`: ''}
+    ${bundle ? `<script src="${bundle}"></script>`: ''}
   </body>
 </html>`;
 
