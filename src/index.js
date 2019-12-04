@@ -40,7 +40,7 @@ module.exports = (config) => (req, res, next) => {
       const styles = sheet.getStyleTags();
 
       this.contentType = 'text/html';
-      this.send(status, page(title, styles, body, config.bundle, {...props, children}));
+      this.send(status, page(title, styles, body, config && config.bundle, {...props, children}));
     } catch (err) {
       log.error(err);
     } finally {
