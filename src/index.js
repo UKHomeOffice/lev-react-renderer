@@ -16,7 +16,7 @@ const page = (title, styles, body, bundle, props) => `<!DOCTYPE html>
     <div id="root">
       ${body}
     </div>
-    ${props ? `<script>window.appProps = ${JSON.stringify(props).replace(/</g, '\\u003c')};</script>`: ''}
+    ${props ? `<script>window.hydrationProps = ${JSON.stringify(props).replace(/</g, '\\u003c')};</script>`: ''}
     ${bundle ? `<script src="${bundle}"></script>`: ''}
   </body>
 </html>`;
