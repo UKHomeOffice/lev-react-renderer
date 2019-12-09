@@ -1,6 +1,7 @@
 'use strict';
 
 const { createElement } = require('react');
+const { hydrate } = require('react-dom');
 const { renderToString } = require('react-dom/server');
 const { ServerStyleSheet } = require('styled-components');
 
@@ -51,3 +52,5 @@ module.exports = (config) => (req, res, next) => {
 
   next();
 };
+
+module.exports.hydrate = Component => hydrate(h(Component, window.hydrationProps), document.getElementById('root'));

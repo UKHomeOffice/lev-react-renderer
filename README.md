@@ -57,15 +57,14 @@ httpd.use(reactRenderer({
 }));
 ```
 
-The bundle should hydrate the `#root` element with the same component you are
-passing to `res.render()` using the `window.hydrationProps` variable. e.g.
+The bundle should call the hydrate function with the same component you are
+passing to `res.render()`. e.g.
 
 ```js
-import React from 'react';
-import { hydrate } from 'react-dom';
+import { hydrate } from 'lev-react-renderer';
 import { YourApp } from './YourApp';
 
-hydrate(React.createElement(YourApp, window.hydrationProps), document.getElementById('root'));
+hydrate(YourApp);
 ```
 
 
