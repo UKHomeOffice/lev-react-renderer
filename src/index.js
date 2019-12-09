@@ -6,17 +6,18 @@ const { ServerStyleSheet } = require('styled-components');
 
 const h = createElement;
 
-const page = (title, styles, body, bundle, props) => `<!DOCTYPE html>
+const page = (title, styles, body, bundle, props, scripts) => `<!DOCTYPE html>
 <html>
   <head>
     <title>${title}</title>
     ${styles}
+    ${scripts ? scripts.map(e => `<script src="${e}"></script>`) : ''}
+    ${props ? `<script>window.hydrationProps = ${JSON.stringify(props).replace(/</g, '\\u003c')};</script>`: ''}
   </head>
   <body style="margin: 0;">
     <div id="root">
       ${body}
     </div>
-    ${props ? `<script>window.hydrationProps = ${JSON.stringify(props).replace(/</g, '\\u003c')};</script>`: ''}
     ${bundle ? `<script src="${bundle}"></script>`: ''}
   </body>
 </html>`;
