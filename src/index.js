@@ -1,21 +1,29 @@
 'use strict';
 
 const { createElement } = require('react');
+const { hydrate } = require('react-dom');
 const { renderToString } = require('react-dom/server');
 const { ServerStyleSheet } = require('styled-components');
 
-const page = (title, styles, body) => `<!DOCTYPE html>
+const h = createElement;
+
+const page = (title, styles, body, bundle, props, scripts) => `<!DOCTYPE html>
 <html>
   <head>
     <title>${title}</title>
     ${styles}
+    ${scripts ? scripts.map(e => `<script src="${e}"></script>`) : ''}
+    ${props ? `<script>window.hydrationProps = ${JSON.stringify(props).replace(/</g, '\\u003c')};</script>`: ''}
   </head>
   <body style="margin: 0;">
-    ${body}
+    <div id="root">
+      ${body}
+    </div>
+    ${bundle ? `<script src="${bundle}"></script>`: ''}
   </body>
 </html>`;
 
-module.exports = (req, res, next) => {
+module.exports = (config) => (req, res, next) => {
   const log = req.log;
 
   res.render = function(status, component, props, children) {
@@ -30,11 +38,11 @@ module.exports = (req, res, next) => {
     const sheet = new ServerStyleSheet();
 
     try {
-      const body = renderToString(sheet.collectStyles(createElement(component, props, children)));
+      const body = renderToString(sheet.collectStyles(h(component, props, children)));
       const styles = sheet.getStyleTags();
 
       this.contentType = 'text/html';
-      this.send(status, page(title, styles, body));
+      this.send(status, page(title, styles, body, config && config.bundle, {...props, children}));
     } catch (err) {
       log.error(err);
     } finally {
@@ -44,3 +52,5 @@ module.exports = (req, res, next) => {
 
   next();
 };
+
+module.exports.hydrate = Component => hydrate(h(Component, window.hydrationProps), document.getElementById('root'));

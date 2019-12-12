@@ -21,42 +21,56 @@ const MyComponent = styled.default.div`
 
 describe('index.js', () => {
   it('is a function', () => (typeof reactRenderer).should.equal('function'));
-  it('is a middleware', () => reactRenderer.length.should.equal(3));
+  it('takes 1 argument', () => reactRenderer.length.should.equal(1));
 
   describe('when called', () => {
-    let res;
+    let middleware;
 
     before(() => {
-      res = {
-        send: sendStub
-      };
-
-      reactRenderer(req, res, nextStub);
+      middleware = reactRenderer({
+        bundle: './public/bundle.js'
+      });
     });
 
-    it('adds a render method to res', () => (typeof res.render).should.equal('function'));
+    it('returns a middleware', () => middleware.length.should.equal(3));
 
-    describe('res.render()', () => {
-      it('takes 4 arguments', () => res.render.length.should.equal(4));
+    describe('the middleware', () => {
+      describe('when called', () => {
+        let res;
 
-      describe('when called without a status argument', () => {
         before(() => {
-          res.render(MyComponent);
+          res = {
+            send: sendStub
+          };
+
+          middleware(req, res, nextStub);
         });
 
-        it('responds', () => sendStub.should.have.been.called);
-        it('responds with an html content type', () => res.contentType.should.equal('text/html'));
-        it('responds with a 200 status', () => sendStub.should.have.been.calledWith(200));
-      });
+        it('adds a render method to res', () => (typeof res.render).should.equal('function'));
 
-      describe('when called with a status argument', () => {
-        before(() => {
-          res.render(418, MyComponent);
+        describe('res.render()', () => {
+          it('takes 4 arguments', () => res.render.length.should.equal(4));
+
+          describe('when called without a status argument', () => {
+            before(() => {
+              res.render(MyComponent);
+            });
+
+            it('responds', () => sendStub.should.have.been.called);
+            it('responds with an html content type', () => res.contentType.should.equal('text/html'));
+            it('responds with a 200 status', () => sendStub.should.have.been.calledWith(200));
+          });
+
+          describe('when called with a status argument', () => {
+            before(() => {
+              res.render(418, MyComponent);
+            });
+
+            it('responds', () => sendStub.should.have.been.called);
+            it('responds with an html content type', () => res.contentType.should.equal('text/html'));
+            it('responds with the status code set', () => sendStub.should.have.been.calledWith(418));
+          });
         });
-
-        it('responds', () => sendStub.should.have.been.called);
-        it('responds with an html content type', () => res.contentType.should.equal('text/html'));
-        it('responds with the status code set', () => sendStub.should.have.been.calledWith(418));
       });
     });
   });

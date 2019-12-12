@@ -4,8 +4,8 @@ React rendering middleware for Restify
 A [Restify] middleware that provides a `res.render` method for sending HTML
 responses based on a [React] component. [styled-components] is supported.
 
-Currently, all rendering is done server-side and there is no hydration to make
-the response isomorphic.
+The rendering is done server-side (SSR) but isomorphic / client-side rendering is
+also supported by providing a link to your bundle.
 
 
 Installation
@@ -33,7 +33,7 @@ const httpd = restify.createServer({
   }
 });
 
-httpd.use(reactRenderer);
+httpd.use(reactRenderer());
 
 httpd.get('/', (req, res, next) => {
   res.render(YourApp, yourProps);
@@ -42,6 +42,29 @@ httpd.get('/', (req, res, next) => {
 httpd.listen(8080, '0.0.0.0', () => {
   log.info('%s listening at %s', httpd.name, httpd.url);
 });
+```
+
+
+### Isomorphic rendering
+
+In addition to Server-Side Rendering (SSR) this library supports 'hydrating'
+your application on the client-side. To do so, simply provide the location of
+your 'bundle' when creating the middleware. e.g.
+
+```js
+httpd.use(reactRenderer({
+  bundle: 'public/bundle.js'
+}));
+```
+
+The bundle should call the hydrate function with the same component you are
+passing to `res.render()`. e.g.
+
+```js
+import { hydrate } from 'lev-react-renderer';
+import { YourApp } from './YourApp';
+
+hydrate(YourApp);
 ```
 
 
