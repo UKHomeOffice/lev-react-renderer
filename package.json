@@ -1,6 +1,6 @@
 {
   "name": "lev-react-renderer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A React rendering middleware for Restify",
   "main": "src/index.js",
   "scripts": {

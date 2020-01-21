@@ -10,7 +10,11 @@ const h = createElement;
 const page = (title, styles, body, bundle, props, scripts) => `<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <title>${title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0c0c" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     ${styles}
     ${scripts ? scripts.map(e => `<script src="${e}"></script>`) : ''}
     ${props ? `<script>window.hydrationProps = ${JSON.stringify(props).replace(/</g, '\\u003c')};</script>`: ''}
