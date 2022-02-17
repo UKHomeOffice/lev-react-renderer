@@ -22,8 +22,8 @@
   },
   "homepage": "https://github.com/UKHomeOffice/lev-react-renderer#readme",
   "dependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "styled-components": "^4.2.0"
   },
   "devDependencies": {
